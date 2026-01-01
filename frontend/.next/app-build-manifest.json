@@ -1,0 +1,150 @@
+{
+  "pages": {
+    "/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/login/page.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/page.js"
+    ],
+    "/administratif/assurances/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/assurances/page.js"
+    ],
+    "/administratif/vignettes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/vignettes/page.js"
+    ],
+    "/administratif/taxes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/taxes/page.js"
+    ],
+    "/administratif/autorisations-circulation/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/autorisations-circulation/page.js"
+    ],
+    "/administratif/visites-techniques/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/visites-techniques/page.js"
+    ],
+    "/administratif/carnets-metrologiques/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/carnets-metrologiques/page.js"
+    ],
+    "/administratif/extincteurs/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/extincteurs/page.js"
+    ],
+    "/administratif/permis-circulation/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/permis-circulation/page.js"
+    ],
+    "/administratif/assurances-internationales/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/administratif/assurances-internationales/page.js"
+    ],
+    "/consommation/carburant/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/carburant/page.js"
+    ],
+    "/consommation/cartes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/cartes/page.js"
+    ],
+    "/consommation/depenses/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/depenses/page.js"
+    ],
+    "/charges/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/charges/page.js"
+    ],
+    "/charges/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/charges/create/page.js"
+    ],
+    "/consommation/frais-generaux/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/frais-generaux/page.js"
+    ],
+    "/consommation/recharges-cartes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/recharges-cartes/page.js"
+    ],
+    "/consommation/recharges-citernes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/recharges-citernes/page.js"
+    ],
+    "/consommation/services/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/services/page.js"
+    ],
+    "/consommation/autoroutes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/consommation/autoroutes/page.js"
+    ],
+    "/finance/factures/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/finance/factures/page.js"
+    ],
+    "/finance/factures/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/finance/factures/create/page.js"
+    ],
+    "/drivers/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/drivers/page.js"
+    ],
+    "/quotes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/quotes/page.js"
+    ],
+    "/quotes/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/quotes/create/page.js"
+    ],
+    "/invoices/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/invoices/page.js"
+    ],
+    "/invoices/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/invoices/create/page.js"
+    ]
+  }
+}

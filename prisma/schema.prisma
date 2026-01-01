@@ -1,0 +1,279 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  SUPERADMIN
+  COMPANY_ADMIN
+  ADMIN
+  STAFF
+  DRIVER
+  AGENCY
+}
+
+enum VehicleType {
+  VAN
+  BUS
+  VIP
+}
+
+enum TripType {
+  AIRPORT
+  EXCURSION
+  CITY_TOUR
+}
+
+enum TripStatus {
+  PLANNED
+  ONGOING
+  DONE
+  CANCELED
+}
+
+enum Currency {
+  MAD
+  EUR
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  UNPAID
+}
+
+enum ChargeType {
+  FUEL
+  DRIVER
+  TOLL
+  PARKING
+  OTHER
+}
+
+// Models
+model Company {
+  id         String    @id @default(uuid())
+  name       String
+  address    String?
+  contact    String?
+  timezone   String?
+  createdAt  DateTime  @default(now())
+
+  users      User[]
+  vehicles   Vehicle[]
+  drivers    Driver[]
+  trips      Trip[]
+  quotes     Quote[]
+  invoices   Invoice[]
+  charges    Charge[]
+  contracts  Contract[]
+  contractTypes ContractType[]
+
+  @@index([name])
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  name          String?
+  role          Role           @default(STAFF)
+  phone         String?
+  companyId     String
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+  passwordResets PasswordReset[]
+  createdAt     DateTime       @default(now())
+  contracts     Contract[]
+
+  @@index([companyId, role])
+}
+
+model Vehicle {
+  id         String      @id @default(uuid())
+  companyId  String
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  type       VehicleType
+  seats      Int
+  plate      String
+  status     String      @default("ACTIVE")
+  costPerKm  Float?
+  createdAt  DateTime    @default(now())
+  trips      Trip[]
+  drivers    Driver[]
+
+  @@index([companyId])
+  @@unique([companyId, plate])
+}
+
+model Driver {
+  id            String   @id @default(uuid())
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name          String
+  phone         String
+  whatsapp      String?
+  email         String?
+  address       String?
+  cinNumber     String?
+  languages     String[] @default([])
+  available     Boolean  @default(true)
+  vehicleId     String?
+  vehicle       Vehicle? @relation(fields: [vehicleId], references: [id])
+  driverPhoto   String?
+  driverLicense String?
+  cin           String?
+  cv            String?
+  createdAt     DateTime @default(now())
+  trips         Trip[]
+
+  @@index([companyId])
+}
+
+model ContractType {
+  id        String    @id @default(uuid())
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime  @default(now())
+
+  contracts Contract[]
+
+  @@index([companyId])
+  @@unique([companyId, name])
+}
+
+model Contract {
+  id               String    @id @default(uuid())
+  companyId        String
+  company          Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  collaboratorId   String
+  collaborator     User      @relation(fields: [collaboratorId], references: [id])
+  number           String?
+  contractTypeId   String?
+  contractType     ContractType? @relation(fields: [contractTypeId], references: [id])
+  startDate        DateTime?
+  hireDate         DateTime?
+  endDatePlanned   DateTime?
+  durationPlanned  Int?
+  endDateReal      DateTime?
+  durationReal     Int?
+  probationPeriod  Int?
+  hours            Float?
+  attachment       String?
+  comment          String?
+  createdAt        DateTime  @default(now())
+
+  @@index([companyId])
+  @@index([collaboratorId])
+}
+
+model Trip {
+  id           String      @id @default(uuid())
+  companyId    String
+  company      Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  date         DateTime
+  pickup       String
+  dropoff      String
+  tripType     TripType
+  vehicleId    String?
+  vehicle      Vehicle?    @relation(fields: [vehicleId], references: [id])
+  driverId     String?
+  driver       Driver?     @relation(fields: [driverId], references: [id])
+  clientName   String?
+  price        Float
+  currency     Currency    @default(MAD)
+  status       TripStatus  @default(PLANNED)
+  // quote and invoice are represented on the child models (Quote, Invoice)
+  quote       Quote?
+  invoice     Invoice?
+  charges      Charge[]
+  createdAt    DateTime    @default(now())
+
+  @@index([companyId, date])
+}
+
+model Quote {
+  id         String       @id @default(uuid())
+  companyId  String
+  company    Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  tripId     String?
+  trip       Trip?        @relation(fields: [tripId], references: [id])
+  @@unique([tripId])
+  pdfUrl     String?
+  status     QuoteStatus  @default(DRAFT)
+  amount     Float
+  currency   Currency     @default(MAD)
+  createdAt  DateTime     @default(now())
+
+  @@index([companyId, status])
+}
+
+model Invoice {
+  id         String        @id @default(uuid())
+  companyId  String
+  company    Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  tripId     String?
+  trip       Trip?         @relation(fields: [tripId], references: [id])
+  @@unique([tripId])
+  pdfUrl     String?
+  amount     Float
+  currency   Currency      @default(MAD)
+  tva        Boolean       @default(false)
+  status     InvoiceStatus @default(DRAFT)
+  createdAt  DateTime      @default(now())
+
+  @@index([companyId, status])
+}
+
+model Charge {
+  id         String    @id @default(uuid())
+  companyId  String
+  company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  tripId     String?
+  trip       Trip?     @relation(fields: [tripId], references: [id])
+  type       ChargeType
+  description String?
+  amount     Float
+  currency   Currency  @default(MAD)
+  createdAt  DateTime  @default(now())
+
+  @@index([companyId, tripId])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+

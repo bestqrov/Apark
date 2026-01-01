@@ -1,0 +1,48 @@
+"use client";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = ChargeDetail;
+const react_query_1 = require("@tanstack/react-query");
+const navigation_1 = require("next/navigation");
+const axios_1 = require("../../../lib/axios");
+const Card_1 = require("../../../components/Card");
+function ChargeDetail() {
+    const params = (0, navigation_1.useParams)();
+    const id = params?.id;
+    const router = (0, navigation_1.useRouter)();
+    const { data, isLoading } = (0, react_query_1.useQuery)(['charge', id], async () => {
+        const res = await axios_1.default.get(`/charges/${id}`);
+        return res.data;
+    }, { enabled: !!id });
+    async function remove() {
+        if (!confirm('Supprimer cette charge ?'))
+            return;
+        try {
+            await axios_1.default.delete(`/charges/${id}`);
+            router.push('/charges');
+        }
+        catch (err) {
+            alert(err.message || 'Erreur');
+        }
+    }
+    if (isLoading)
+        return <div>Chargement...</div>;
+    if (!data)
+        return <div>Introuvable</div>;
+    return (<div className="max-w-3xl mx-auto space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Détails de la charge</h2>
+        <div className="space-x-2">
+          <a className="text-sm text-blue-600" href={`/charges/${id}/edit`}>Modifier</a>
+          <button onClick={remove} className="text-sm text-red-600">Supprimer</button>
+        </div>
+      </div>
+
+      <Card_1.default title="Infos">
+        <div>Type: {data.type}</div>
+        <div>Montant: {data.amount} {data.currency}</div>
+        <div>Trip: {data.tripId || '-'}</div>
+      </Card_1.default>
+    </div>);
+}
+//# sourceMappingURL=page.js.map
