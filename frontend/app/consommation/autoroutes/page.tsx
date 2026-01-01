@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
+import FormSection from '../../../components/FormSection'
 
 export default function AutoroutesPage() {
   const [vehicle, setVehicle] = useState('')
@@ -15,6 +16,8 @@ export default function AutoroutesPage() {
   const [montantHT, setMontantHT] = useState<number | ''>('')
   const [tva, setTva] = useState<number>(20)
   const [montantTTC, setMontantTTC] = useState<number>(0)
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     const ht = Number(montantHT || 0)
@@ -24,6 +27,9 @@ export default function AutoroutesPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setLoading(true)
+    setMessage('')
+    
     const fd = new FormData()
     fd.append('vehicle', vehicle)
     fd.append('collaborator', collaborator)
@@ -38,117 +44,165 @@ export default function AutoroutesPage() {
     fd.append('montantTTC', String(montantTTC))
     if (attachment) fd.append('attachment', attachment)
 
-    await fetch('/api/consommation/autoroutes', { method: 'POST', body: fd })
+    try {
+      const res = await fetch('/api/consommation/autoroutes', { method: 'POST', body: fd })
+      if (!res.ok) throw new Error('Erreur')
+      setMessage('Enregistrement réussi avec succès')
+    } catch (err) {
+      setMessage("Échec de l'enregistrement")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold mb-4">Autoroute</h1>
+    <div className="max-w-7xl mx-auto p-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-lg shadow-lg">
+        <h1 className="text-2xl font-bold flex items-center gap-3">
+          <span className="text-3xl">🛣️</span>
+          Péage Autoroute
+        </h1>
+        <p className="text-blue-100 text-sm mt-2">Gérez les passages de péage d'autoroute</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2">
-            <div className="border rounded p-4 bg-white mb-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="text-sm text-slate-600">Véhicule</label>
-                  <select value={vehicle} onChange={e => setVehicle(e.target.value)} className="mt-1 w-full p-2 border rounded">
-                    <option value="">Choisir</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-sm text-slate-600">Collaborateur</label>
-                  <select value={collaborator} onChange={e => setCollaborator(e.target.value)} className="mt-1 w-full p-2 border rounded">
-                    <option value="">Choisir</option>
-                  </select>
-                </div>
-              </div>
-
-              <h2 className="font-semibold mb-3">Désignation</h2>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <div>
-                  <label className="text-sm text-slate-600">Numéro</label>
-                  <input value={number} onChange={e => setNumber(e.target.value)} className="mt-1 w-full p-2 border rounded" />
-                </div>
-                <div>
-                  <label className="text-sm text-slate-600">Date</label>
-                  <div className="flex gap-2">
-                    <input type="date" value={date} onChange={e => setDate(e.target.value)} className="mt-1 p-2 border rounded w-full" />
-                    <input type="time" value={time} onChange={e => setTime(e.target.value)} className="mt-1 p-2 border rounded w-28" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <div>
-                  <label className="text-sm text-slate-600">Péage départ</label>
-                  <div className="mt-1 flex gap-2">
-                    <select value={peageDepart} onChange={e => setPeageDepart(e.target.value)} className="flex-1 p-2 border rounded">
-                      <option value="">Choisir</option>
+      <form onSubmit={handleSubmit} className="bg-white rounded-b-lg shadow-lg">
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <FormSection title="Véhicule & Conducteur" icon="🚗" color="blue">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Véhicule</label>
+                    <select value={vehicle} onChange={e => setVehicle(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                      <option value="">Sélectionner un véhicule</option>
                     </select>
-                    <button type="button" className="px-3 bg-green-500 text-white rounded">+</button>
                   </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-slate-600">Péage arrivée</label>
-                  <div className="mt-1 flex gap-2">
-                    <select value={peageArrivee} onChange={e => setPeageArrivee(e.target.value)} className="flex-1 p-2 border rounded">
-                      <option value="">Choisir</option>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Collaborateur</label>
+                    <select value={collaborator} onChange={e => setCollaborator(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                      <option value="">Sélectionner un collaborateur</option>
                     </select>
-                    <button type="button" className="px-3 bg-green-500 text-white rounded">+</button>
                   </div>
                 </div>
-              </div>
+              </FormSection>
 
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <div>
-                  <label className="text-sm text-slate-600">Type de paiement</label>
-                  <select value={paymentType} onChange={e => setPaymentType(e.target.value)} className="mt-1 w-full p-2 border rounded">
-                    <option value="">Choisir</option>
-                  </select>
+              <FormSection title="Informations du passage" icon="📋" color="green">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Numéro de ticket</label>
+                    <input value={number} onChange={e => setNumber(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="AUTO-2026-001" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date & Heure</label>
+                    <div className="flex gap-2">
+                      <input type="date" value={date} onChange={e => setDate(e.target.value)} className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" />
+                      <input type="time" value={time} onChange={e => setTime(e.target.value)} className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm text-slate-600">Attachement</label>
-                  <input type="file" onChange={e => setAttachment(e.target.files ? e.target.files[0] : null)} className="mt-1 w-full" />
+              </FormSection>
+
+              <FormSection title="Trajet du péage" icon="🚦" color="purple">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Péage de départ</label>
+                    <div className="flex gap-2">
+                      <select value={peageDepart} onChange={e => setPeageDepart(e.target.value)} className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                        <option value="">Sélectionner le péage départ</option>
+                      </select>
+                      <button type="button" className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-medium transition-all shadow-sm hover:shadow-md">
+                        <span className="text-lg">+</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Péage d'arrivée</label>
+                    <div className="flex gap-2">
+                      <select value={peageArrivee} onChange={e => setPeageArrivee(e.target.value)} className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                        <option value="">Sélectionner le péage arrivée</option>
+                      </select>
+                      <button type="button" className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-medium transition-all shadow-sm hover:shadow-md">
+                        <span className="text-lg">+</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </FormSection>
+
+              <FormSection title="Paiement & Documents" icon="💳" color="orange">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Mode de paiement</label>
+                    <select value={paymentType} onChange={e => setPaymentType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
+                      <option value="">Sélectionner le mode de paiement</option>
+                      <option value="cash">Espèces</option>
+                      <option value="card">Carte bancaire</option>
+                      <option value="badge">Badge télépéage</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Ticket / Justificatif</label>
+                    <input type="file" onChange={e => setAttachment(e.target.files ? e.target.files[0] : null)} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 transition-all" />
+                  </div>
+                </div>
+              </FormSection>
+            </div>
+
+            <div className="lg:col-span-1">
+              <FormSection title="Montant à payer" icon="💰" color="pink">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Montant HT</label>
+                    <div className="flex rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
+                      <input type="number" step="0.01" value={montantHT as any} onChange={e => setMontantHT(e.target.value === '' ? '' : Number(e.target.value))} className="flex-1 px-3 py-2 border-0 focus:ring-0 outline-none" placeholder="0.00" />
+                      <span className="inline-flex items-center px-4 bg-gradient-to-r from-pink-50 to-pink-100 text-pink-700 font-medium">DH</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">TVA</label>
+                    <div className="flex rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
+                      <input type="number" step="0.01" value={tva} onChange={e => setTva(Number(e.target.value))} className="flex-1 px-3 py-2 border-0 focus:ring-0 outline-none" />
+                      <span className="inline-flex items-center px-4 bg-gradient-to-r from-pink-50 to-pink-100 text-pink-700 font-medium">%</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-pink-200">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Montant TTC</label>
+                    <div className="p-4 bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-200 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-600">Total à payer:</span>
+                        <span className="text-2xl font-bold text-pink-700">{montantTTC.toFixed(2)} DH</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </FormSection>
             </div>
           </div>
 
-          <div className="col-span-1">
-            <div className="border rounded p-4 bg-white">
-              <h2 className="font-semibold mb-3">Montant</h2>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm text-slate-600">Montant HT</label>
-                  <div className="mt-1 flex">
-                    <input type="number" step="0.01" value={montantHT as any} onChange={e => setMontantHT(e.target.value === '' ? '' : Number(e.target.value))} className="w-full p-2 border rounded-l" />
-                    <span className="inline-flex items-center px-3 border border-l-0 rounded-r bg-slate-50">DH</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-slate-600">TVA</label>
-                  <div className="mt-1 flex">
-                    <input type="number" step="0.01" value={tva} onChange={e => setTva(Number(e.target.value))} className="w-full p-2 border rounded-l" />
-                    <span className="inline-flex items-center px-3 border border-l-0 rounded-r bg-slate-50">%</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-slate-600">Montant TTC</label>
-                  <div className="mt-1 p-2 border rounded bg-slate-50">{montantTTC.toFixed(2)} DH</div>
-                </div>
+          {message && (
+            <div className={`p-4 rounded-lg ${message.includes('succès') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{message.includes('succès') ? '✅' : '❌'}</span>
+                {message}
               </div>
             </div>
-          </div>
-        </div>
+          )}
 
-        <div className="flex justify-end gap-3">
-          <button type="button" className="px-4 py-2 border rounded">Annuler</button>
-          <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Enregistrer</button>
-          <button type="submit" className="px-4 py-2 bg-blue-700 text-white rounded">Enregistrer & Ajouter</button>
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <button type="button" className="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-all">
+              ❌ Annuler
+            </button>
+            <button type="submit" disabled={loading} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium flex items-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50">
+              <span>💾</span>
+              {loading ? 'Enregistrement...' : 'Enregistrer'}
+            </button>
+            <button type="submit" disabled={loading} className="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-medium flex items-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50">
+              <span>➕</span>
+              {loading ? 'Enregistrement...' : 'Enregistrer & Ajouter'}
+            </button>
+          </div>
         </div>
       </form>
     </div>

@@ -1,8 +1,1 @@
-{
-  "app\\login\\page.tsx -> ../../lib/jwt": {
-    "id": "app\\login\\page.tsx -> ../../lib/jwt",
-    "files": [
-      "static/chunks/_app-pages-browser_lib_jwt_ts.js"
-    ]
-  }
-}
+{}

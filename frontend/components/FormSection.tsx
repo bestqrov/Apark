@@ -25,12 +25,12 @@ export default function FormSection({ title, icon, color, children }: FormSectio
   }[color] || 'bg-blue-50'
 
   return (
-    <div className={`p-2 rounded border-l-3 ${borderColorClass} ${bgColorClass} mb-2`}>
-      <h3 className="text-sm font-semibold mb-1 flex items-center gap-2 text-slate-700">
-        <span className="text-base">{icon}</span>
-        {title}
-      </h3>
-      <div className="space-y-1">
+    <div className={`overflow-hidden rounded-lg border ${borderColorClass} mb-4`}>
+      <div className="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white">
+        <span className="text-lg">{icon}</span>
+        <h3 className="text-sm font-semibold">{title}</h3>
+      </div>
+      <div className={`${bgColorClass} p-4 space-y-3`}>
         {children}
       </div>
     </div>

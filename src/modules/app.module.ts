@@ -12,11 +12,16 @@ import { DashboardModule } from './dashboard/dashboard.module'
 import { FinanceModule } from './finance/finance.module'
 import { ContractsModule } from './contracts/contracts.module'
 import { AdministratifModule } from './administratif/administratif.module'
+import { ConsommationModule } from './consommation/consommation.module'
+import { SettingsModule } from './settings/settings.module'
+import { CartesModule } from './cartes/cartes.module'
+import { PrismaModule } from '../prisma/prisma.module'
 import { PrismaService } from '../prisma/prisma.service'
 import { AllExceptionsFilter } from '../common/filters/http-exception.filter'
 
 @Module({
   imports: [
+    PrismaModule,
     AuthModule,
     CompaniesModule,
     VehiclesModule,
@@ -29,6 +34,9 @@ import { AllExceptionsFilter } from '../common/filters/http-exception.filter'
     FinanceModule,
     ContractsModule,
     AdministratifModule,
+    ConsommationModule,
+    SettingsModule,
+    CartesModule,
   ],
   providers: [PrismaService, { provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })

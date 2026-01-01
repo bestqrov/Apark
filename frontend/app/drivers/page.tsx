@@ -27,20 +27,35 @@ export default function DriversPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <Table
-          headers={['Nom', 'Téléphone', 'Langues', 'Disponible', 'Documents', 'Actions']}
-          data={data?.map((driver: any) => [
-            driver.name,
-            driver.phone,
-            driver.languages?.join(', ') || 'Aucune',
-            driver.available ? '✅ Disponible' : '❌ Indisponible',
-            (driver.driverPhoto || driver.driverLicense || driver.cin || driver.cv) ? '📎 Complet' : '📭 Manquant',
-            <div key={driver.id} className="flex gap-2">
-              <Link href={`/drivers/${driver.id}`} className="text-blue-600 hover:text-blue-800 text-sm">👁️</Link>
-              <Link href={`/drivers/${driver.id}/edit`} className="text-green-600 hover:text-green-800 text-sm">✏️</Link>
-            </div>
-          ]) || []}
-        />
+        <Table>
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Nom</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Téléphone</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Langues</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Disponible</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Documents</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {data?.map((driver: any) => (
+              <tr key={driver.id} className="hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">{driver.name}</td>
+                <td className="px-4 py-3 text-sm">{driver.phone}</td>
+                <td className="px-4 py-3 text-sm">{driver.languages?.join(', ') || 'Aucune'}</td>
+                <td className="px-4 py-3 text-sm">{driver.available ? '✅ Disponible' : '❌ Indisponible'}</td>
+                <td className="px-4 py-3 text-sm">{(driver.driverPhoto || driver.driverLicense || driver.cin || driver.cv) ? '📎 Complet' : '📭 Manquant'}</td>
+                <td className="px-4 py-3 text-sm">
+                  <div className="flex gap-2">
+                    <Link href={`/drivers/${driver.id}`} className="text-blue-600 hover:text-blue-800 font-medium">👁️ Voir</Link>
+                    <Link href={`/drivers/${driver.id}/edit`} className="text-green-600 hover:text-green-800 font-medium">✏️ Modifier</Link>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </div>
     </div>
   )

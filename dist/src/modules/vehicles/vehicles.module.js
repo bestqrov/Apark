@@ -18,6 +18,7 @@ exports.VehiclesModule = VehiclesModule = __decorate([
     (0, common_1.Module)({
         providers: [vehicles_service_1.VehiclesService, prisma_service_1.PrismaService],
         controllers: [vehicles_controller_1.VehiclesController],
+        exports: [vehicles_service_1.VehiclesService],
     })
 ], VehiclesModule);
 //# sourceMappingURL=vehicles.module.js.map

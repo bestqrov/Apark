@@ -35,6 +35,9 @@ let InvoicesController = class InvoicesController {
     findOne(id) {
         return this.svc.findOne(id);
     }
+    remove(id) {
+        return this.svc.remove(id);
+    }
 };
 exports.InvoicesController = InvoicesController;
 __decorate([
@@ -64,6 +67,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, common_1.HttpCode)(204),
+    (0, roles_decorator_1.Roles)('ADMIN', 'STAFF'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], InvoicesController.prototype, "remove", null);
 exports.InvoicesController = InvoicesController = __decorate([
     (0, common_1.Controller)('invoices'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtGuard, roles_guard_1.RolesGuard, company_guard_1.CompanyGuard),

@@ -50,44 +50,44 @@ let AdministratifController = class AdministratifController {
 };
 exports.AdministratifController = AdministratifController;
 __decorate([
-    (0, common_1.Get)('api/vehicles'),
+    (0, common_1.Get)('vehicles'),
     __param(0, (0, common_1.Query)('companyId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AdministratifController.prototype, "vehicles", null);
 __decorate([
-    (0, common_1.Get)('api/insurance-companies'),
+    (0, common_1.Get)('insurance-companies'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AdministratifController.prototype, "insuranceCompanies", null);
 __decorate([
-    (0, common_1.Get)('api/fleets'),
+    (0, common_1.Get)('fleets'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AdministratifController.prototype, "fleets", null);
 __decorate([
-    (0, common_1.Get)('api/garages'),
+    (0, common_1.Get)('garages'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AdministratifController.prototype, "garages", null);
 __decorate([
-    (0, common_1.Get)('api/suppliers'),
+    (0, common_1.Get)('suppliers'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AdministratifController.prototype, "suppliers", null);
 __decorate([
-    (0, common_1.Get)('api/centers'),
+    (0, common_1.Get)('centers'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AdministratifController.prototype, "centers", null);
 __decorate([
-    (0, common_1.Post)('api/administratif/:resource'),
+    (0, common_1.Post)('administratif/:resource'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('attachment', {
         storage: (0, multer_1.diskStorage)({
             destination: (req, _file, cb) => {

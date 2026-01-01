@@ -24,34 +24,33 @@ export default function Sidebar() {
     {
       title: null,
       items: [
-        { href: '/dashboard', label: 'Tableau de bord', icon: '🏠', show: show.dashboard },
-        { href: '/trips', label: 'Trajets', icon: '📅', show: show.trips },
+        { href: '/dashboard', label: 'TABLEAU DE BORD', icon: '🏠', show: show.dashboard },
       ],
     },
     {
-      title: 'Opérations',
+      title: 'OPÉRATIONS',
       items: [
+        { href: '/trips', label: 'Trajets', icon: '📅', show: show.trips },
         { href: '/drivers', label: 'Chauffeurs', icon: '👥', show: show.drivers },
         { href: '/vehicles', label: 'Véhicules', icon: '🚚', show: show.vehicles },
         { href: '/contracts', label: 'Contrats', icon: '📜', show: show.contracts },
       ],
     },
     {
-      title: 'Commercial',
+      title: 'COMMERCIAL',
       items: [
         { href: '/quotes', label: 'Devis', icon: '📝', show: show.quotes },
         { href: '/invoices', label: 'Factures', icon: '📄', show: show.invoices },
       ],
     },
     {
-      title: 'Finance',
+      title: 'FINANCE',
       items: [
         { href: '/charges', label: 'Charges', icon: '💳', show: show.charges },
-        { href: '/finance/factures', label: 'Factures', icon: '📄', show: show.charges },
       ],
     },
     {
-      title: null,
+      title: 'PARAMÈTRES',
       items: [
         { href: '/settings', label: 'Paramètres', icon: '⚙️', show: show.settings },
       ],
@@ -73,18 +72,21 @@ export default function Sidebar() {
               if (visible.length === 0) return null
               return (
                 <>
-                  {/* first group (e.g., Tableau de bord) */}
-                  {visible.slice(0, 1).map((g, idx) => (
-                    <button
-                      key={`g0`}
-                      onClick={() => setOpenGroup(`g0`)}
-                      className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
-                    >
-                      <span className="w-4 inline-block">{g.items.find(i => i.show)?.icon}</span>
-                      <span className="flex-1 text-left">{g.title ?? g.items.find(i => i.show)?.label}</span>
-                      <span>▸</span>
-                    </button>
-                  ))}
+                  {/* Dashboard as direct link */}
+                  {visible.slice(0, 1).map((g, idx) => {
+                    const item = g.items.find(i => i.show)
+                    if (!item) return null
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
+                      >
+                        <span className="w-4 inline-block">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </Link>
+                    )
+                  })}
 
                   {/* Administratif placed second */}
                   <button onClick={() => setOpenGroup('administratif')} className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white">
@@ -101,17 +103,35 @@ export default function Sidebar() {
                   </button>
 
                   {/* remaining groups */}
-                  {visible.slice(1).map((g, i) => (
-                    <button
-                      key={`g${i + 1}`}
-                      onClick={() => setOpenGroup(`g${i + 1}`)}
-                      className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
-                    >
-                      <span className="w-4 inline-block">{g.items.find(it => it.show)?.icon}</span>
-                      <span className="flex-1 text-left">{g.title ?? g.items.find(it => it.show)?.label}</span>
-                      <span>▸</span>
-                    </button>
-                  ))}
+                  {visible.slice(1).map((g, i) => {
+                    // If it's PARAMÈTRES (last group), render as direct link
+                    if (g.title === 'PARAMÈTRES') {
+                      const item = g.items.find(it => it.show)
+                      if (!item) return null
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
+                        >
+                          <span className="w-4 inline-block">{item.icon}</span>
+                          <span>{g.title}</span>
+                        </Link>
+                      )
+                    }
+                    // Otherwise render as expandable button
+                    return (
+                      <button
+                        key={`g${i + 1}`}
+                        onClick={() => setOpenGroup(`g${i + 1}`)}
+                        className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
+                      >
+                        <span className="w-4 inline-block">{g.items.find(it => it.show)?.icon}</span>
+                        <span className="flex-1 text-left">{g.title ?? g.items.find(it => it.show)?.label}</span>
+                        <span>▸</span>
+                      </button>
+                    )
+                  })}
                 </>
               )
             })()}

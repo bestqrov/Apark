@@ -1,7 +1,6 @@
 {
-  "/quotes/create/page": "app/quotes/create/page.js",
-  "/invoices/page": "app/invoices/page.js",
-  "/invoices/create/page": "app/invoices/create/page.js",
-  "/finance/factures/page": "app/finance/factures/page.js",
-  "/finance/factures/create/page": "app/finance/factures/create/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/settings/page": "app/settings/page.js"
 }

@@ -23,4 +23,8 @@ export class InvoicesService {
   findOne(id: string) {
     return this.prisma.invoice.findUnique({ where: { id } })
   }
+
+  remove(id: string) {
+    return this.prisma.invoice.delete({ where: { id } })
+  }
 }

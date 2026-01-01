@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{\"app\\\\login\\\\page.tsx -> ../../lib/jwt\":{\"id\":\"app\\\\login\\\\page.tsx -> ../../lib/jwt\",\"files\":[\"static/chunks/_app-pages-browser_lib_jwt_ts.js\"]}}"
+self.__REACT_LOADABLE_MANIFEST="{}"

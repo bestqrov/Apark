@@ -32,6 +32,9 @@ let InvoicesService = class InvoicesService {
     findOne(id) {
         return this.prisma.invoice.findUnique({ where: { id } });
     }
+    remove(id) {
+        return this.prisma.invoice.delete({ where: { id } });
+    }
 };
 exports.InvoicesService = InvoicesService;
 exports.InvoicesService = InvoicesService = __decorate([

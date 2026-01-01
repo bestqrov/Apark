@@ -10,38 +10,38 @@ import * as fs from 'fs'
 export class AdministratifController {
   constructor(private vehiclesSvc: VehiclesService, private companiesSvc: CompaniesService) {}
 
-  @Get('api/vehicles')
+  @Get('vehicles')
   async vehicles(@Query('companyId') companyId: string) {
     return this.vehiclesSvc.findAll(companyId)
   }
 
-  @Get('api/insurance-companies')
+  @Get('insurance-companies')
   async insuranceCompanies() {
     return this.companiesSvc.findAll()
   }
 
-  @Get('api/fleets')
+  @Get('fleets')
   async fleets() {
     // return vehicles as a simple fleet listing placeholder
     return this.vehiclesSvc.findAll(undefined)
   }
 
-  @Get('api/garages')
+  @Get('garages')
   garages() {
     return []
   }
 
-  @Get('api/suppliers')
+  @Get('suppliers')
   suppliers() {
     return []
   }
 
-  @Get('api/centers')
+  @Get('centers')
   centers() {
     return []
   }
 
-  @Post('api/administratif/:resource')
+  @Post('administratif/:resource')
   @UseInterceptors(FileInterceptor('attachment', {
     storage: diskStorage({
       destination: (req, _file, cb) => {

@@ -15,6 +15,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="fr">
+      <head>
+        <title>ArwaPark</title>
+        <meta name="description" content="ArwaPark - Gestion de parc automobile" />
+      </head>
       <body>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>

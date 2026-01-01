@@ -1,6 +1,7 @@
 "use client"
 import { useState } from 'react'
 import axios from '../../lib/axios'
+import { safeFetchJson } from '../../lib/safeFetch'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -11,14 +12,12 @@ export default function LoginPage() {
     e.preventDefault()
     try {
       const apiUrl = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:3001/api'
-      const res = await fetch(`${apiUrl}/auth/login`, {
+      const data = await safeFetchJson(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ email, password }),
       })
-      if (!res.ok) throw await res.json()
-      const data = await res.json()
       const token = data.access
       localStorage.setItem('access_token', token)
       // decode token and set user/company
@@ -33,7 +32,7 @@ export default function LoginPage() {
       try { document.cookie = `access_token=${token}; path=/` } catch (e) {}
       window.location.href = '/dashboard'
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Erreur')
+      setError(formatError(err))
     }
   }
 
@@ -50,33 +49,57 @@ export default function LoginPage() {
     // attempt direct login using same flow as submit
     try {
       const apiUrl = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:3001/api'
-      const res = await fetch(`${apiUrl}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email: c.email, password: c.password }),
-      })
-      if (!res.ok) {
-        const err = await res.json()
-        setError(err?.message || 'Login failed')
+      try {
+        const data = await safeFetchJson(`${apiUrl}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: c.email, password: c.password }),
+        })
+        const token = data.access
+        localStorage.setItem('access_token', token)
+        try {
+          const { decodeToken } = await import('../../lib/jwt')
+          const payload = decodeToken(token)
+          if (payload) {
+            localStorage.setItem('user', JSON.stringify({ id: payload.sub, email: payload.email, role: payload.role, companyId: payload.companyId }))
+            if (payload.companyId) localStorage.setItem('companyId', payload.companyId)
+          }
+        } catch (e) {}
+        try { document.cookie = `access_token=${token}; path=/` } catch (e) {}
+        window.location.href = '/dashboard'
+        return
+      } catch (err: any) {
+        setError(err?.message || err?.error || 'Login failed')
         return
       }
-      const data = await res.json()
-      const token = data.access
-      localStorage.setItem('access_token', token)
-      try {
-        const { decodeToken } = await import('../../lib/jwt')
-        const payload = decodeToken(token)
-        if (payload) {
-          localStorage.setItem('user', JSON.stringify({ id: payload.sub, email: payload.email, role: payload.role, companyId: payload.companyId }))
-          if (payload.companyId) localStorage.setItem('companyId', payload.companyId)
-        }
-      } catch (e) {}
-      try { document.cookie = `access_token=${token}; path=/` } catch (e) {}
-      window.location.href = '/dashboard'
+      
     } catch (err: any) {
-      setError(err?.message || 'Erreur')
+      setError(formatError(err))
     }
+  }
+
+  function formatError(err: any) {
+    if (!err) return 'Erreur'
+    if (typeof err === 'string') {
+      const s = err.trim()
+      if (s.startsWith('<')) return 'Unexpected HTML response from server'
+      return s
+    }
+    if (err instanceof Error) {
+      const m = String(err.message || '')
+      if (m.trim().startsWith('<')) return 'Unexpected HTML response from server'
+      return m || 'Erreur'
+    }
+    // Try common shapes
+    if (err?.response?.data?.message) return String(err.response.data.message)
+    if (err?.message) {
+      const m = String(err.message)
+      if (m.trim().startsWith('<')) return 'Unexpected HTML response from server'
+      return m
+    }
+    if (err?.error) return String(err.error)
+    return 'Erreur'
   }
 
   return (

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards, Req } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query, UseGuards, Req, Delete, HttpCode } from '@nestjs/common'
 import { InvoicesService } from './invoices.service'
 import { CreateInvoiceDto } from './dto/create-invoice.dto'
 import { UpdateInvoiceDto } from './dto/update-invoice.dto'
@@ -30,5 +30,12 @@ export class InvoicesController {
   @Roles('ADMIN','STAFF','DRIVER')
   findOne(@Param('id') id: string) {
     return this.svc.findOne(id)
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @Roles('ADMIN','STAFF')
+  remove(@Param('id') id: string) {
+    return this.svc.remove(id)
   }
 }

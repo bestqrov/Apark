@@ -18,6 +18,7 @@ exports.CompaniesModule = CompaniesModule = __decorate([
     (0, common_1.Module)({
         providers: [companies_service_1.CompaniesService, prisma_service_1.PrismaService],
         controllers: [companies_controller_1.CompaniesController],
+        exports: [companies_service_1.CompaniesService],
     })
 ], CompaniesModule);
 //# sourceMappingURL=companies.module.js.map
