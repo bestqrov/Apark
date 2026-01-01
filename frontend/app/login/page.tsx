@@ -10,6 +10,29 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  function formatError(err: any) {
+    if (!err) return 'Erreur'
+    if (typeof err === 'string') {
+      const s = err.trim()
+      if (s.startsWith('<')) return 'Réponse inattendue du serveur'
+      return s
+    }
+    if (err instanceof Error) {
+      const m = String(err.message || '')
+      if (m.trim().startsWith('<')) return 'Réponse inattendue du serveur'
+      return m || 'Erreur'
+    }
+    // Try common shapes
+    if (err?.response?.data?.message) return String(err.response.data.message)
+    if (err?.message) {
+      const m = String(err.message)
+      if (m.trim().startsWith('<')) return 'Réponse inattendue du serveur'
+      return m
+    }
+    if (err?.error) return String(err.error)
+    return 'Erreur'
+  }
+
   async function submit(e: any) {
     e.preventDefault()
     setIsLoading(true)
@@ -54,63 +77,32 @@ export default function LoginPage() {
     // attempt direct login using same flow as submit
     try {
       const apiUrl = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:3001/api'
+      const data = await safeFetchJson(`${apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: c.email, password: c.password }),
+      })
+      const token = data.access
+      localStorage.setItem('access_token', token)
       try {
-        const data = await safeFetchJson(`${apiUrl}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email: c.email, password: c.password }),
-        })
-        const token = data.access
-        localStorage.setItem('access_token', token)
-        try {
-          const { decodeToken } = await import('../../lib/jwt')
-          const payload = decodeToken(token)
-          if (payload) {
-            localStorage.setItem('user', JSON.stringify({ id: payload.sub, email: payload.email, role: payload.role, companyId: payload.companyId }))
-            if (payload.companyId) localStorage.setItem('companyId', payload.companyId)
-          }
-        } catch (e) {}
-        try { document.cookie = `access_token=${token}; path=/` } catch (e) {}
-        window.location.href = '/dashboard'
-        return
-      } catch (err: any) {
-        setError(err?.message || err?.error || 'Login failed')
-        setIsLoading(false)
-        return
-      }
-      
+        const { decodeToken } = await import('../../lib/jwt')
+        const payload = decodeToken(token)
+        if (payload) {
+          localStorage.setItem('user', JSON.stringify({ id: payload.sub, email: payload.email, role: payload.role, companyId: payload.companyId }))
+          if (payload.companyId) localStorage.setItem('companyId', payload.companyId)
+        }
+      } catch (e) {}
+      try { document.cookie = `access_token=${token}; path=/` } catch (e) {}
+      window.location.href = '/dashboard'
     } catch (err: any) {
       setError(formatError(err))
       setIsLoading(false)
     }
   }
 
-  function formatError(err: any) {
-    if (!err) return 'Erreur'
-    if (typeof err === 'string') {
-      const s = err.trim()
-      if (s.startsWith('<')) return 'Réponse inattendue du serveur'
-      return s
-    }
-    if (err instanceof Error) {
-      const m = String(err.message || '')
-      if (m.trim().startsWith('<')) return 'Réponse inattendue du serveur'
-      return m || 'Erreur'
-    }
-    // Try common shapes
-    if (err?.response?.data?.message) return String(err.response.data.message)
-    if (err?.message) {
-      const m = String(err.message)
-      if (m.trim().startsWith('<')) return 'Réponse inattendue du serveur'
-      return m
-    }
-    if (err?.error) return String(err.error)
-    return 'Erreur'
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 sm:p-6 md:p-8">
       {/* Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-20 animate-blob"></div>
@@ -120,21 +112,21 @@ export default function LoginPage() {
 
       {/* Login Card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
           {/* Header with Gradient */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 p-8 text-white">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 p-6 sm:p-8 text-white">
             <div className="flex items-center justify-center mb-4">
-              <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-lg">
-                <Truck className="w-10 h-10 text-blue-600 dark:text-blue-500" />
+              <div className="bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg">
+                <Truck className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 dark:text-blue-500" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-center mb-2">ArwaPark</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2">ArwaPark</h1>
             <p className="text-center text-blue-100 dark:text-blue-200 text-sm">Gestion de Transport Professionnel</p>
           </div>
 
           {/* Form Section */}
-          <form onSubmit={submit} className="p-8">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Bienvenue</h2>
+          <form onSubmit={submit} className="p-6 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-2">Bienvenue</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">Connectez-vous à votre compte</p>
 
             {error && (
@@ -221,15 +213,15 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => quickLogin('SUPER_ADMIN')}
                   disabled={isLoading}
-                  className="px-3 py-2 bg-gray-800 dark:bg-gray-700 text-white text-xs font-medium rounded-lg hover:bg-gray-900 dark:hover:bg-gray-600 transition-colors disabled:opacity-50"
+                  className="px-2 sm:px-3 py-2 bg-gray-800 dark:bg-gray-700 text-white text-xs font-medium rounded-lg hover:bg-gray-900 dark:hover:bg-gray-600 transition-colors disabled:opacity-50"
                 >
-                  Super Admin
+                  <span className="hidden xs:inline">Super </span>Admin
                 </button>
                 <button
                   type="button"
                   onClick={() => quickLogin('ADMIN')}
                   disabled={isLoading}
-                  className="px-3 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50"
+                  className="px-2 sm:px-3 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50"
                 >
                   Admin
                 </button>
@@ -237,7 +229,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => quickLogin('STAFF')}
                   disabled={isLoading}
-                  className="px-3 py-2 bg-yellow-500 dark:bg-yellow-600 text-white text-xs font-medium rounded-lg hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-colors disabled:opacity-50"
+                  className="px-2 sm:px-3 py-2 bg-yellow-500 dark:bg-yellow-600 text-white text-xs font-medium rounded-lg hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-colors disabled:opacity-50"
                 >
                   Staff
                 </button>
@@ -245,16 +237,17 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => quickLogin('DRIVER')}
                   disabled={isLoading}
-                  className="px-3 py-2 bg-green-600 dark:bg-green-700 text-white text-xs font-medium rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors disabled:opacity-50"
+                  className="px-2 sm:px-3 py-2 bg-green-600 dark:bg-green-700 text-white text-xs font-medium rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors disabled:opacity-50"
                 >
                   Chauffeur
+                </button>
                 </button>
               </div>
             </div>
           </form>
 
           {/* Footer */}
-          <div className="px-8 pb-8">
+          <div className="px-6 sm:px-8 pb-6 sm:pb-8">
             <p className="text-center text-xs text-gray-500 dark:text-gray-400">
               © 2026 ArwaPark. Tous droits réservés.
             </p>

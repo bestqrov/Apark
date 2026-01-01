@@ -61,8 +61,31 @@ export default function Sidebar() {
 
   // when no group is open show compact headers only; when one is open show its items only
   return (
-    <aside className="w-64 bg-blue-900 dark:bg-gray-800 border-r border-blue-800 dark:border-gray-700 hidden md:block transition-colors">
-      <div className="p-4 text-lg font-bold text-white">ArwaPark</div>
+    <>
+      {/* Mobile overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden transition-opacity"
+        onClick={() => {
+          const sidebar = document.querySelector('aside');
+          if (sidebar) sidebar.classList.add('-translate-x-full');
+        }}
+        style={{ display: 'none' }}
+      />
+      
+      <aside className="-translate-x-full md:translate-x-0 w-64 bg-blue-900 dark:bg-gray-800 border-r border-blue-800 dark:border-gray-700 fixed md:static inset-y-0 left-0 transform transition-transform duration-300 z-30 h-screen overflow-y-auto">
+        <div className="p-4 text-base sm:text-lg font-bold text-white flex items-center justify-between">
+          <span>ArwaPark</span>
+          {/* Close button for mobile */}
+          <button 
+            className="md:hidden text-white hover:bg-blue-800 dark:hover:bg-gray-700 p-1 rounded"
+            onClick={() => {
+              const sidebar = document.querySelector('aside');
+              if (sidebar) sidebar.classList.add('-translate-x-full');
+            }}
+          >
+            ✕
+          </button>
+        </div>
       <nav className="p-4">
         {openGroup === null ? (
           // compact headers view (Administratif placed second)
@@ -174,6 +197,7 @@ export default function Sidebar() {
         )}
       </nav>
     </aside>
+    </>
   )
 }
 

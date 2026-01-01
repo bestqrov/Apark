@@ -46,8 +46,8 @@ export default function InvoicePrintPage() {
   const montantTTC = invoice.amount + montantTVA
 
   return (
-    <>
-      <style jsx global>{`
+    <div>
+      <style dangerouslySetInnerHTML={{__html: `
         @media print {
           body {
             margin: 0;
@@ -61,7 +61,7 @@ export default function InvoicePrintPage() {
             margin: 15mm;
           }
         }
-      `}</style>
+      `}} />
 
       <div className="max-w-[210mm] mx-auto bg-white p-8">
         {/* Print Button - Hidden when printing */}
@@ -265,6 +265,6 @@ export default function InvoicePrintPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

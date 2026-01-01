@@ -25,11 +25,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {hideShell ? (
               <main className="p-4">{children}</main>
             ) : (
-              <div className="flex min-h-screen bg-gray-50">
+              <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
                 <Sidebar />
-                <div className="flex-1">
+                <div className="flex-1 w-full md:w-auto">
                   <Topbar />
-                  <main className="p-4">{children}</main>
+                  <main className="p-4 md:p-6">{children}</main>
                 </div>
               </div>
             )}

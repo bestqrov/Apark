@@ -21,6 +21,10 @@ const dashboard_module_1 = require("./dashboard/dashboard.module");
 const finance_module_1 = require("./finance/finance.module");
 const contracts_module_1 = require("./contracts/contracts.module");
 const administratif_module_1 = require("./administratif/administratif.module");
+const consommation_module_1 = require("./consommation/consommation.module");
+const settings_module_1 = require("./settings/settings.module");
+const cartes_module_1 = require("./cartes/cartes.module");
+const prisma_module_1 = require("../prisma/prisma.module");
 const prisma_service_1 = require("../prisma/prisma.service");
 const http_exception_filter_1 = require("../common/filters/http-exception.filter");
 let AppModule = class AppModule {
@@ -29,6 +33,7 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
             companies_module_1.CompaniesModule,
             vehicles_module_1.VehiclesModule,
@@ -41,6 +46,9 @@ exports.AppModule = AppModule = __decorate([
             finance_module_1.FinanceModule,
             contracts_module_1.ContractsModule,
             administratif_module_1.AdministratifModule,
+            consommation_module_1.ConsommationModule,
+            settings_module_1.SettingsModule,
+            cartes_module_1.CartesModule,
         ],
         providers: [prisma_service_1.PrismaService, { provide: core_1.APP_FILTER, useClass: http_exception_filter_1.AllExceptionsFilter }],
     })

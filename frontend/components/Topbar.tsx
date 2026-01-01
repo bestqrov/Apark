@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../lib/auth'
-import { User, LogOut, Sun, Moon } from 'lucide-react'
+import { User, LogOut, Sun, Moon, Menu } from 'lucide-react'
 import axios from '../lib/axios'
 import Image from 'next/image'
 
@@ -47,10 +47,23 @@ export default function Topbar() {
   }
 
   return (
-    <header className="flex items-center justify-between border-b bg-white dark:bg-gray-800 dark:border-gray-700 p-4 transition-colors">
-      <div className="flex items-center gap-3">
+    <header className="flex items-center justify-between border-b bg-white dark:bg-gray-800 dark:border-gray-700 p-3 md:p-4 transition-colors">
+      {/* Mobile menu button */}
+      <button 
+        className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          const sidebar = document.querySelector('aside');
+          if (sidebar) {
+            sidebar.classList.toggle('-translate-x-full');
+          }
+        }}
+      >
+        <Menu size={20} className="text-gray-600 dark:text-gray-300" />
+      </button>
+
+      <div className="flex items-center gap-2 sm:gap-3">
         {companyProfile?.logo && (
-          <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+          <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
             <Image
               src={`http://localhost:3001${companyProfile.logo}`}
               alt={companyProfile.name || 'Company Logo'}
@@ -59,8 +72,8 @@ export default function Topbar() {
             />
           </div>
         )}
-        <div>
-          <div className="text-sm font-semibold dark:text-white">
+        <div className="hidden sm:block">
+          <div className="text-xs sm:text-sm font-semibold dark:text-white">
             {companyProfile?.name || user?.companyId || 'Demo Company'}
           </div>
           {companyProfile?.tagline && (
@@ -70,10 +83,10 @@ export default function Topbar() {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <button
           onClick={toggleTheme}
-          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           aria-label="Toggle theme"
         >
           {theme === 'light' ? (
@@ -82,13 +95,13 @@ export default function Topbar() {
             <Sun size={18} className="text-gray-300" />
           )}
         </button>
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-          <User size={16} />
-          {user?.email || 'Invité'}
+        <div className="hidden md:flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+          <User size={14} className="sm:w-4 sm:h-4" />
+          <span className="hidden lg:inline">{user?.email || 'Invité'}</span>
         </div>
-        <button onClick={() => logout()} className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
-          <LogOut size={16} />
-          Se déconnecter
+        <button onClick={() => logout()} className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
+          <LogOut size={14} className="sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">Se déconnecter</span>
         </button>
       </div>
     </header>
