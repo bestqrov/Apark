@@ -264,6 +264,7 @@ export default function InvoicePrintPage() {
             <p>Document généré le {new Date().toLocaleDateString('fr-FR')} à {new Date().toLocaleTimeString('fr-FR')}</p>
           </div>
         </div>
+        </div>
       </div>
     </div>
   )
