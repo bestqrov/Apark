@@ -61,7 +61,7 @@ export default function Sidebar() {
 
   // when no group is open show compact headers only; when one is open show its items only
   return (
-    <aside className="w-64 bg-blue-900 border-r hidden md:block">
+    <aside className="w-64 bg-blue-900 dark:bg-gray-800 border-r border-blue-800 dark:border-gray-700 hidden md:block transition-colors">
       <div className="p-4 text-lg font-bold text-white">ArwaPark</div>
       <nav className="p-4">
         {openGroup === null ? (
@@ -80,7 +80,7 @@ export default function Sidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
+                        className="flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 dark:hover:bg-gray-700 text-sm text-white transition-colors"
                       >
                         <span className="w-4 inline-block">{item.icon}</span>
                         <span>{item.label}</span>
@@ -89,14 +89,14 @@ export default function Sidebar() {
                   })}
 
                   {/* Administratif placed second */}
-                  <button onClick={() => setOpenGroup('administratif')} className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white">
+                  <button onClick={() => setOpenGroup('administratif')} className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 dark:hover:bg-gray-700 text-sm text-white transition-colors">
                     <span className="w-4 inline-block">📁</span>
                     <span className="flex-1 text-left">ADMINISTRATIF</span>
                     <span>▸</span>
                   </button>
 
                   {/* Consommation placed after Administratif */}
-                  <button onClick={() => setOpenGroup('consommation')} className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white">
+                  <button onClick={() => setOpenGroup('consommation')} className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 dark:hover:bg-gray-700 text-sm text-white transition-colors">
                     <span className="w-4 inline-block">⛽</span>
                     <span className="flex-1 text-left">CONSOMMATION</span>
                     <span>▸</span>
@@ -112,7 +112,7 @@ export default function Sidebar() {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
+                          className="flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 dark:hover:bg-gray-700 text-sm text-white transition-colors"
                         >
                           <span className="w-4 inline-block">{item.icon}</span>
                           <span>{g.title}</span>
@@ -124,7 +124,7 @@ export default function Sidebar() {
                       <button
                         key={`g${i + 1}`}
                         onClick={() => setOpenGroup(`g${i + 1}`)}
-                        className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 text-sm text-white"
+                        className="w-full flex items-center gap-3 py-2 px-3 rounded hover:bg-blue-700 dark:hover:bg-gray-700 text-sm text-white transition-colors"
                       >
                         <span className="w-4 inline-block">{g.items.find(it => it.show)?.icon}</span>
                         <span className="flex-1 text-left">{g.title ?? g.items.find(it => it.show)?.label}</span>
@@ -140,8 +140,8 @@ export default function Sidebar() {
           // expanded group view
           <div>
             <div className="flex items-center justify-between mb-2">
-              <button onClick={() => setOpenGroup(null)} className="text-sm text-slate-200 hover:text-white">← Retour</button>
-              <button onClick={() => setOpenGroup(null)} className="text-sm text-slate-200 hover:text-white">Fermer</button>
+              <button onClick={() => setOpenGroup(null)} className="text-sm text-slate-200 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors">← Retour</button>
+              <button onClick={() => setOpenGroup(null)} className="text-sm text-slate-200 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors">Fermer</button>
             </div>
 
             {openGroup === 'administratif' ? (
@@ -195,10 +195,10 @@ function AdministratifLinks() {
   const sorted = items.slice().sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }))
 
   return (
-    <div className="mt-4 text-slate-200">
+    <div className="mt-4 text-slate-200 dark:text-gray-300">
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded hover:bg-blue-800 text-sm text-white"
+        className="w-full flex items-center justify-between px-3 py-2 rounded hover:bg-blue-800 dark:hover:bg-gray-700 text-sm text-white transition-colors"
       >
         <div className="flex items-center gap-3">
           <span className="w-4 inline-block">📁</span>
@@ -212,7 +212,7 @@ function AdministratifLinks() {
       {open && (
         <div className="space-y-1 px-2 pt-2">
           {sorted.map(i => (
-            <Link key={i.href} className="block ml-2 text-sm text-slate-200 hover:text-white" href={i.href}>{i.label}</Link>
+            <Link key={i.href} className="block ml-2 text-sm text-slate-200 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors" href={i.href}>{i.label}</Link>
           ))}
         </div>
       )}
@@ -237,10 +237,10 @@ function ConsommationLinks() {
   const sorted = items.slice().sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }))
 
   return (
-    <div className="mt-4 text-slate-200">
+    <div className="mt-4 text-slate-200 dark:text-gray-300">
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded hover:bg-blue-800 text-sm text-white"
+        className="w-full flex items-center justify-between px-3 py-2 rounded hover:bg-blue-800 dark:hover:bg-gray-700 text-sm text-white transition-colors"
       >
         <div className="flex items-center gap-3">
           <span className="w-4 inline-block">⛽</span>
@@ -254,7 +254,7 @@ function ConsommationLinks() {
       {open && (
         <div className="space-y-1 px-2 pt-2">
           {sorted.map(i => (
-            <Link key={i.href} className="block ml-2 text-sm text-slate-200 hover:text-white" href={i.href}>{i.label}</Link>
+            <Link key={i.href} className="block ml-2 text-sm text-slate-200 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors" href={i.href}>{i.label}</Link>
           ))}
         </div>
       )}

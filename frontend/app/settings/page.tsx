@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import FormSection from '../../components/FormSection'
 import axios from '../../lib/axios'
+import PageHeader from '../../components/PageHeader'
 
 const CollapsibleSection = ({ title, icon, color, isOpen, onToggle, children }: any) => {
   return (
@@ -48,6 +49,10 @@ export default function SettingsPage() {
   const [companyAddress, setCompanyAddress] = useState('')
   const [companyCountry, setCompanyCountry] = useState('Maroc')
   const [companyEmail, setCompanyEmail] = useState('')
+  const [companyIF, setCompanyIF] = useState('')
+  const [companyCNSS, setCompanyCNSS] = useState('')
+  const [companyICE, setCompanyICE] = useState('')
+  const [companyCompteBancaire, setCompanyCompteBancaire] = useState('')
 
   const toggleSection = (section: string) => {
     setOpenSection(openSection === section ? null : section)
@@ -66,8 +71,12 @@ export default function SettingsPage() {
       formData.append('website', companyWebsite)
       formData.append('address', companyAddress)
       formData.append('country', companyCountry)
+      formData.append('if', companyIF)
+      formData.append('cnss', companyCNSS)
+      formData.append('ice', companyICE)
+      formData.append('compteBancaire', companyCompteBancaire)
 
-      const response = await axios.put('/api/settings/company-profile', formData, {
+      const response = await axios.put('/settings/company-profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -85,7 +94,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('/api/settings/company-profile')
+        const response = await axios.get('/settings/company-profile')
         if (response.data?.data) {
           const profile = response.data.data
           setCompanyName(profile.name || 'ArwaPark')
@@ -95,6 +104,10 @@ export default function SettingsPage() {
           setCompanyWebsite(profile.website || '')
           setCompanyAddress(profile.address || '')
           setCompanyCountry(profile.country || 'Maroc')
+          setCompanyIF(profile.if || '')
+          setCompanyCNSS(profile.cnss || '')
+          setCompanyICE(profile.ice || '')
+          setCompanyCompteBancaire(profile.compteBancaire || '')
         }
       } catch (error) {
         console.error('Error fetching profile:', error)
@@ -105,13 +118,11 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-6 rounded-t-lg shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-3">
-          <span className="text-3xl">⚙️</span>
-          Paramètres
-        </h1>
-        <p className="text-indigo-100 text-sm mt-2">Configurez votre application selon vos préférences</p>
-      </div>
+      <PageHeader 
+        title="⚙️ Paramètres" 
+        gradientFrom="indigo-600" 
+        gradientTo="indigo-700"
+      />
 
       <div className="bg-white rounded-b-lg shadow-lg p-6 space-y-4">
 
@@ -238,6 +249,66 @@ export default function SettingsPage() {
                   <option value="Tunisie">🇹🇳 Tunisie</option>
                   <option value="Autre">🌍 Autre</option>
                 </select>
+              </div>
+
+              <div className="pt-4 border-t border-gray-200">
+                <h3 className="text-md font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <span>📋</span> Informations Fiscales
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      IF (Identifiant Fiscal)
+                    </label>
+                    <input 
+                      type="text"
+                      value={companyIF}
+                      onChange={(e) => setCompanyIF(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="XXXXXXXX"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      CNSS
+                    </label>
+                    <input 
+                      type="text"
+                      value={companyCNSS}
+                      onChange={(e) => setCompanyCNSS(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="XXXXXXXX"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      ICE
+                    </label>
+                    <input 
+                      type="text"
+                      value={companyICE}
+                      onChange={(e) => setCompanyICE(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="XXXXXXXXXXXXXXX"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Compte Bancaire
+                    </label>
+                    <input 
+                      type="text"
+                      value={companyCompteBancaire}
+                      onChange={(e) => setCompanyCompteBancaire(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="RIB"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

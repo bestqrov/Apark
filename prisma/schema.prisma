@@ -236,18 +236,26 @@ model Quote {
 }
 
 model Invoice {
-  id         String        @id @default(uuid())
-  companyId  String
-  company    Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  tripId     String?
-  trip       Trip?         @relation(fields: [tripId], references: [id])
+  id                String        @id @default(uuid())
+  companyId         String
+  company           Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  tripId            String?
+  trip              Trip?         @relation(fields: [tripId], references: [id])
   @@unique([tripId])
-  pdfUrl     String?
-  amount     Float
-  currency   Currency      @default(MAD)
-  tva        Boolean       @default(false)
-  status     InvoiceStatus @default(DRAFT)
-  createdAt  DateTime      @default(now())
+  numero            String?
+  date              DateTime?
+  clientId          String?
+  pdfUrl            String?
+  amount            Float
+  tvaPercent        Float?
+  currency          Currency      @default(MAD)
+  tva               Boolean       @default(false)
+  numeroAttestation String?
+  dateDelivrance    DateTime?
+  periodeFacturation String?
+  lines             Json?
+  status            InvoiceStatus @default(DRAFT)
+  createdAt         DateTime      @default(now())
 
   @@index([companyId, status])
 }
@@ -441,6 +449,10 @@ model CompanyProfile {
   website   String?
   address   String?
   country   String?
+  if        String?  // Identifiant Fiscal
+  cnss      String?  // Caisse Nationale de Sécurité Sociale
+  ice       String?  // Identifiant Commun de l'Entreprise
+  compteBancaire String?  // Bank Account Number
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

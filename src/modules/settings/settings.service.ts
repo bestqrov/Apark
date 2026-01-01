@@ -41,6 +41,10 @@ export class SettingsService {
         website: dto.website,
         address: dto.address,
         country: dto.country,
+        if: dto.if,
+        cnss: dto.cnss,
+        ice: dto.ice,
+        compteBancaire: dto.compteBancaire,
       },
       create: {
         companyId,
@@ -52,6 +56,10 @@ export class SettingsService {
         website: dto.website,
         address: dto.address,
         country: dto.country,
+        if: dto.if,
+        cnss: dto.cnss,
+        ice: dto.ice,
+        compteBancaire: dto.compteBancaire,
       },
     });
 

@@ -4,6 +4,7 @@ import axios from '../../lib/axios'
 import Link from 'next/link'
 import Table from '../../components/Table'
 import { useRouter } from 'next/navigation'
+import PageHeader from '../../components/PageHeader'
 
 export default function InvoicesPage() {
   const router = useRouter()
@@ -38,20 +39,15 @@ export default function InvoicesPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 rounded-t-lg shadow-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-3">
-              <span className="text-3xl">📄</span>
-              Factures
-            </h1>
-            <p className="text-purple-100 text-sm mt-2">Gérez toutes vos factures</p>
-          </div>
-          <Link href="/invoices/create" className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-all shadow-md">
-            ➕ Nouvelle facture
-          </Link>
-        </div>
-      </div>
+      <PageHeader 
+        title="📄 Factures" 
+        gradientFrom="purple-600" 
+        gradientTo="pink-600"
+      >
+        <Link href="/invoices/create" className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-all shadow-md">
+          ➕ Nouvelle facture
+        </Link>
+      </PageHeader>
 
       <div className="bg-white rounded-b-lg shadow-lg overflow-hidden">
         <Table>

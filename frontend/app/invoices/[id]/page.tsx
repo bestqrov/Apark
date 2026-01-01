@@ -22,7 +22,7 @@ export default function InvoiceDetailPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('/api/settings/company-profile')
+        const res = await axios.get('/settings/company-profile')
         setCompanyProfile(res.data?.data)
       } catch (error) {
         console.error('Error fetching profile:', error)
@@ -78,9 +78,18 @@ export default function InvoiceDetailPage() {
               )}
               <h2 className="text-xl font-bold text-gray-800">{companyProfile?.name || 'ArwaPark'}</h2>
               <p className="text-sm text-gray-600">{companyProfile?.tagline}</p>
-              <p className="text-sm text-gray-600 mt-2">{companyProfile?.address}</p>
-              <p className="text-sm text-gray-600">{companyProfile?.phone}</p>
-              <p className="text-sm text-gray-600">{companyProfile?.email}</p>
+              <div className="text-sm text-gray-600 mt-2 space-y-1">
+                {companyProfile?.address && <p>📍 {companyProfile.address}</p>}
+                {companyProfile?.phone && <p>📞 {companyProfile.phone}</p>}
+                {companyProfile?.email && <p>✉️ {companyProfile.email}</p>}
+                {companyProfile?.website && <p>🌐 {companyProfile.website}</p>}
+              </div>
+              <div className="text-sm text-gray-700 mt-2 space-y-1 border-t pt-2">
+                {companyProfile?.if && <p><span className="font-semibold">IF:</span> {companyProfile.if}</p>}
+                {companyProfile?.ice && <p><span className="font-semibold">ICE:</span> {companyProfile.ice}</p>}
+                {companyProfile?.cnss && <p><span className="font-semibold">CNSS:</span> {companyProfile.cnss}</p>}
+                {companyProfile?.compteBancaire && <p><span className="font-semibold">RIB:</span> {companyProfile.compteBancaire}</p>}
+              </div>
             </div>
             <div className="text-right">
               <h1 className="text-3xl font-bold text-purple-600 mb-2">FACTURE</h1>

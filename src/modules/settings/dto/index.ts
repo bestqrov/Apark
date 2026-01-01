@@ -32,6 +32,22 @@ export class UpdateCompanyProfileDto {
   @IsString()
   @IsOptional()
   country?: string;
+
+  @IsString()
+  @IsOptional()
+  if?: string;
+
+  @IsString()
+  @IsOptional()
+  cnss?: string;
+
+  @IsString()
+  @IsOptional()
+  ice?: string;
+
+  @IsString()
+  @IsOptional()
+  compteBancaire?: string;
 }
 
 export class UpdateAppearanceDto {

@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import FormSection from '../../../components/FormSection'
+import PageHeader from '../../../components/PageHeader'
 
 export default function CarburantPage() {
   const [vehicle, setVehicle] = useState('')
@@ -84,13 +85,11 @@ export default function CarburantPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white p-6 rounded-t-lg shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-3">
-          <span className="text-3xl">⛽</span>
-          Carburant
-        </h1>
-        <p className="text-orange-100 text-sm mt-2">Gérez les consommations de carburant des véhicules</p>
-      </div>
+      <PageHeader 
+        title="⛽ Carburant" 
+        gradientFrom="orange-600" 
+        gradientTo="orange-700"
+      />
 
       <form onSubmit={handleSubmit} className="bg-white rounded-b-lg shadow-lg">
         <div className="p-6 space-y-6">

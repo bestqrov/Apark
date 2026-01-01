@@ -12,7 +12,7 @@ export default function CreateInvoicePage() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [clientId, setClientId] = useState('')
   const [montantHT, setMontantHT] = useState('0.00')
-  const [tva, setTva] = useState('0.00')
+  const [tvaPercent, setTvaPercent] = useState('20')
   const [numeroAttestation, setNumeroAttestation] = useState('')
   const [dateDelivrance, setDateDelivrance] = useState('')
   const [attachment, setAttachment] = useState<File | null>(null)
@@ -27,21 +27,27 @@ export default function CreateInvoicePage() {
     }
   })
 
-  const montantTTC = (parseFloat(montantHT) + parseFloat(tva)).toFixed(2)
+  // Calculate TVA amount and TTC
+  const montantHTValue = parseFloat(montantHT) || 0
+  const tvaPercentValue = parseFloat(tvaPercent) || 0
+  const montantTVA = (montantHTValue * tvaPercentValue / 100)
+  const montantTTC = (montantHTValue + montantTVA).toFixed(2)
 
   const mutation = useMutation({
     mutationFn: async (payload: any) => {
-      const fd = new FormData()
-      Object.keys(payload).forEach(k => {
-        if (k === 'attachment' && payload[k]) fd.append(k, payload[k])
-        else if (k === 'lines') fd.append(k, JSON.stringify(payload[k]))
-        else fd.append(k, payload[k])
-      })
-      return axios.post(`/invoices?companyId=${companyId}`, fd)
+      const response = await axios.post(`/invoices?companyId=${companyId}`, payload)
+      return response.data
     },
-    onSuccess() {
+    onSuccess(data) {
+      alert('✓ Facture créée avec succès!')
       qc.invalidateQueries({ queryKey: ['invoices', companyId] })
-      window.location.href = '/invoices'
+      setTimeout(() => {
+        window.location.href = '/invoices'
+      }, 500)
+    },
+    onError(error: any) {
+      console.error('Error creating invoice:', error)
+      alert('✗ Erreur lors de la création de la facture: ' + (error.response?.data?.message || error.message))
     }
   })
 
@@ -67,7 +73,18 @@ export default function CreateInvoicePage() {
   function onSubmit(e: any) {
     e.preventDefault()
     mutation.mutate({
-      numero, date, clientId, montantHT, tva, numeroAttestation, dateDelivrance, periodeFacturation, attachment, lines
+      numero,
+      date,
+      clientId,
+      amount: parseFloat(montantHT),
+      tva: parseFloat(tvaPercent) > 0,
+      tvaPercent: parseFloat(tvaPercent),
+      numeroAttestation,
+      dateDelivrance,
+      periodeFacturation,
+      attachment,
+      lines,
+      currency: 'MAD'
     })
   }
 
@@ -106,7 +123,7 @@ export default function CreateInvoicePage() {
 
           {/* Montants */}
           <FormSection title="Montants" icon="💰" color="green">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Montant HT</label>
                 <div className="relative">
@@ -115,9 +132,16 @@ export default function CreateInvoicePage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">TVA</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">TVA (%)</label>
                 <div className="relative">
-                  <input type="number" step="0.01" value={tva} onChange={e => setTva(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                  <input type="number" step="0.01" min="0" max="100" value={tvaPercent} onChange={e => setTvaPercent(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                  <span className="absolute right-3 top-2 text-gray-500 text-sm font-bold">%</span>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Montant TVA</label>
+                <div className="relative">
+                  <input type="text" value={montantTVA.toFixed(2)} readOnly className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg font-medium text-gray-700" />
                   <span className="absolute right-3 top-2 text-gray-500 text-sm">DH</span>
                 </div>
               </div>
